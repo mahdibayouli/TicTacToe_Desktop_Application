@@ -12,16 +12,11 @@ In both these single player modes, the user can either choose to play with X or 
 There is the options to restart the game and reset the score to 0. 
 
 ## Overview
-This section describes the different parts of the game, feel free to watch the short animated GIF below for a quick game walkthrough. 
-
+This section describes the different parts of the game, feel free to watch the short animated GIF down below for a quick game walkthrough. 
 When you run the application, you should first of all choose the game mode in order to start a new game. 
-
 The game can either be single player (Easy / Hard modes) or multiplayer. After choosing a single player mode, you should first chose X or O to start a game. 
-
 The score is updated after each turn. You can always reset the score to 0 by clicking the button at the bottom right.
-
 You can also switch between game modes from the list at the top.
-
 
 ![TicTacToe_Gif](https://user-images.githubusercontent.com/76594745/164062103-ccd90fc0-b8d9-4feb-876d-6c343baca357.gif)
 
