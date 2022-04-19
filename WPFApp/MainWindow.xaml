@@ -28,7 +28,7 @@
 
         <TextBlock Text="Game Mode" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
 
-        <ComboBox x:Name="Game_Mode" Grid.Row="1" Grid.Column="1" Text="GameMode"  >
+        <ComboBox x:Name="Game_Mode" Grid.Row="1" Grid.Column="1" Text="GameMode" FontSize="20" >
             <ComboBoxItem x:Name="Multiplayer" IsSelected="false" Content="Multiplayer" Selected="Multiplayer_Selected"/>
             <ComboBoxItem x:Name="Easy" IsSelected="false" Content="Easy" Selected="Easy_Selected"/>
             <ComboBoxItem x:Name="Hard" IsSelected="false" Content="Hard" Selected="Hard_Selected"/>
