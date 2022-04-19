@@ -3,31 +3,41 @@ using System.Windows;
 
 namespace GameLibrary
 {
+    public enum GameMode { 
+        MULTPILAYER, HARD, EASY, NOTSELECTED
+    }
+    public enum XO { 
+        X , O , NOTSELECTED
+    }
     public class Game
     {
         public int[] board = new int[9]; // 0: empty, 1: X, 2: O
         public int[] score = new int[3]; // each index corresponds to: {0 : X's score, 1 : O's score, 2: Draws}
 
-        public bool singlePlayer = false;
-        public bool singleX = false;        // if singleX == false then it's singleO 
-        public bool turnX = true;           // if turnX == false then it's turnO
-        public bool hardMode = false;       // if hardMode == false then it's easyMode
+        public GameMode GameMode { get; set; }
+        public XO SinglePlayerXorO { get; set; }
+        public bool XIsPlaying { get; set; }          // XIsPlaying == true ==> it's X's turn otherwise it's O's turn
 
-        int evaluate()
+        public Game() {
+            this.SinglePlayerXorO = XO.NOTSELECTED;
+            this.GameMode = GameMode.NOTSELECTED;
+        }
+
+        int Evaluate()
         {
-            if (lastPlayerWon(true))
+            if (LastPlayerWon(true))
             {
-                if (turnX && !singleX) return 1;
-                if (!turnX && singleX) return 1;
+                if (XIsPlaying && (SinglePlayerXorO == XO.O)) return 1;
+                if (!XIsPlaying && (SinglePlayerXorO == XO.X)) return 1;
                 else return -1;
             }
             return 0;
         }
 
-        public int minimax(int depth, int computer, bool maximizingTurn)
+        public int Minimax(int depth, int computer, bool maximizingTurn)
         {
-            int score = evaluate();
-            if (score == 1 || score == -1 || boardIsFull(true))
+            int score = Evaluate();
+            if (score == 1 || score == -1 || BoardIsFull(true))
                 return score;
             if (maximizingTurn)
             {
@@ -37,10 +47,10 @@ namespace GameLibrary
                     if (board[i] == 0)
                     {
                         board[i] = computer; //computer move, maximizing
-                        turnX = !turnX;
-                        best = Math.Max(best, minimax(depth + 1, computer, !maximizingTurn));
+                        XIsPlaying = !XIsPlaying;
+                        best = Math.Max(best, Minimax(depth + 1, computer, !maximizingTurn));
                         board[i] = 0;
-                        turnX = !turnX;
+                        XIsPlaying = !XIsPlaying;
                     }
                 }
                 return best;
@@ -53,17 +63,17 @@ namespace GameLibrary
                     if (board[i] == 0)
                     {
                         board[i] = computer == 1 ? 2 : 1;
-                        turnX = !turnX;
-                        best = Math.Min(best, minimax(depth + 1, computer, !maximizingTurn));
+                        XIsPlaying = !XIsPlaying;
+                        best = Math.Min(best, Minimax(depth + 1, computer, !maximizingTurn));
                         board[i] = 0;
-                        turnX = !turnX;
+                        XIsPlaying = !XIsPlaying;
                     }
                 }
                 return best;
             }
         }
 
-        int bestChoice(int computer)
+        int BestChoice(int computer)
         {
             int bestVal = -1000, bestMove = -1;
             for (int i = 0; i < board.Length; i++)
@@ -71,7 +81,7 @@ namespace GameLibrary
                 if (board[i] == 0)
                 {
                     board[i] = computer;
-                    int moveVal = minimax(0, computer, false);
+                    int moveVal = Minimax(0, computer, false);
                     board[i] = 0;
                     if (moveVal > bestVal)
                     {
@@ -84,17 +94,17 @@ namespace GameLibrary
         }
 
 
-        public int computerTurn()
+        public int ComputerTurn()
         {
-            int computer = singleX ? 2 : 1;
-            int choice = hardMode ? bestChoice(computer) : randomChoice();
-            board[choice] = turnX ? 1 : 2;
-            turnX = !turnX;
+            int computer = SinglePlayerXorO == XO.X ? 2 : 1;
+            int choice = GameMode == GameMode.HARD ? BestChoice(computer) : RandomChoice();
+            board[choice] = XIsPlaying ? 1 : 2;
+            XIsPlaying = !XIsPlaying;
             return choice;
         }
-        public int randomChoice()
+        public int RandomChoice()
         {
-            Random rand = new Random();
+            Random rand = new();
             int choice;
             do
                 choice = rand.Next(9);
@@ -102,7 +112,7 @@ namespace GameLibrary
             return choice;
         }
 
-        public bool boardIsFull(bool evaluating = false)
+        public bool BoardIsFull(bool evaluating = false)
         {
             foreach (int i in board)
                 if (i == 0) return false;
@@ -114,7 +124,7 @@ namespace GameLibrary
             }
             return true;
         }
-        public bool lastPlayerWon(bool evaluating = false)
+        public bool LastPlayerWon(bool evaluating = false)
         {
             if (
                ((board[0] > 0) && (board[0] == board[1] && board[1] == board[2])) ||    //upper row
@@ -129,9 +139,9 @@ namespace GameLibrary
             {
                 if (!evaluating)
                 {
-                    string message = string.Format("{0} wins!", turnX ? "O" : "X");
+                    string message = string.Format("{0} wins!", XIsPlaying ? "O" : "X");
                     MessageBox.Show(message);
-                    if (turnX) score[1]++; else score[0]++;
+                    if (XIsPlaying) score[1]++; else score[0]++;
                 }
                 return true;
             }

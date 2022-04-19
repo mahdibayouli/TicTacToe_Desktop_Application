@@ -8,80 +8,78 @@ namespace TicTacToeWPF1
 {
     public partial class MainWindow : Window
     {
-        static Game game = new Game();
-        static Button[] buttons = new Button[9];
-        static Button[] XOscore = new Button[2];
-        static bool gameModeSelected = false;
-        static bool XOselected = false;
-        static bool multiplayerSelected = false;
+        static readonly Game game = new Game();
+        static Button[] boardButtons = new Button[9];
+        static Button[] scoreButtons = new Button[2];
 
-        void updateBoard()
+        static void UpdateBoard()
         {
             for (int i = 0; i < game.board.Length; i++)
                 switch (game.board[i])
                 {
                     case 1:
-                        buttons[i].Content = "X";
+                        boardButtons[i].Content = "X";
                         break;
                     case 2:
-                        buttons[i].Content = "O";
+                        boardButtons[i].Content = "O";
                         break;
                     case 0:
-                        buttons[i].Content = "";
+                        boardButtons[i].Content = "";
                         break;
                 }
         }
-        void updateScore(bool restart = false)
+        
+        static void UpdateScore(bool restart = false)
         {
             if (restart)
                 for (int i = 0; i < game.score.Length; i++)
                     game.score[i] = 0;
 
-            XOscore[0].Content = string.Format("{0} : {1}", "X", game.score[0]);
-            XOscore[1].Content = string.Format("{0} : {1}", "O", game.score[1]);
+            scoreButtons[0].Content = string.Format("{0} : {1}", "X", game.score[0]);
+            scoreButtons[1].Content = string.Format("{0} : {1}", "O", game.score[1]);
         }
 
-        bool checkWinner()
+        static bool CheckWinner()
         {
-            if (game.lastPlayerWon() || game.boardIsFull())
+            if (game.LastPlayerWon() || game.BoardIsFull())
             {
-                updateScore();
-                newGame();
+                UpdateScore();
+                NewGame();
                 return true;
             }
             return false;
         }
 
-        void newGame()
+        static void NewGame()
         {
             for (int i = 0; i < game.board.Length; i++) game.board[i] = 0;
-            game.turnX = true;
-            foreach (var button in buttons) button.Content = "";
+            game.XIsPlaying = true;
+            foreach (var button in boardButtons) button.Content = "";
 
-            if ((!game.singleX) && gameModeSelected && (!multiplayerSelected) && XOselected)
+            if ((game.SinglePlayerXorO == GameLibrary.XO.O) && ((game.GameMode == GameMode.EASY) || (game.GameMode == GameMode.HARD)))
             {
-                int choice = game.computerTurn();
-                updateBoard();
+                int choice = game.ComputerTurn();
+                UpdateBoard();
             }
         }
 
         public MainWindow()
         {
             InitializeComponent();
-            gameModeSelected = false;
-            buttons = Board.Children.Cast<Button>().ToArray();
-            XOscore = XO.Children.Cast<Button>().ToArray();
-            newGame();
+            game.GameMode = GameMode.NOTSELECTED;
+            boardButtons = Board.Children.Cast<Button>().ToArray();
+            scoreButtons = XO.Children.Cast<Button>().ToArray();
+            NewGame();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (!gameModeSelected)
+            if (game.GameMode == GameMode.NOTSELECTED)
             {
                 MessageBox.Show("Please select the game mode to start playing");
                 return;
             }
-            if (!multiplayerSelected && !XOselected)
+            if ((game.GameMode != GameMode.MULTPILAYER) && (game.SinglePlayerXorO == GameLibrary.XO.NOTSELECTED))
             {
                 MessageBox.Show("Please select X or O to start playing");
                 return;
@@ -89,88 +87,81 @@ namespace TicTacToeWPF1
 
             int index = Grid.GetRow((Button)sender) * 3 + Grid.GetColumn((Button)sender);
             if (game.board[index] != 0) return;
-            game.board[index] = (game.turnX) ? 1 : 2;
+            game.board[index] = (game.XIsPlaying) ? 1 : 2;
 
-            updateBoard();
-            game.turnX = !game.turnX;
-            if (checkWinner()) return;
+            UpdateBoard();
+            game.XIsPlaying = !game.XIsPlaying;
+            if (CheckWinner()) return;
 
             //Computer Turn
-            if (!multiplayerSelected)
+            if (game.GameMode != GameMode.MULTPILAYER)
             {
-                game.computerTurn();
-                updateBoard();
-                if (checkWinner()) return;
+                game.ComputerTurn();
+                UpdateBoard();
+                if (CheckWinner()) return;
             }
         }
 
         private void RestartGame_Click(object sender, RoutedEventArgs e)
         {
-            newGame();
+            NewGame();
         }
 
         private void ResetScore_Click(object sender, RoutedEventArgs e)
         {
-            updateScore(true); //true: restart game => score[i] = 0;
+            UpdateScore(true); //true: restart game => score[i] = 0;
         }
 
         private void X_Click(object sender, RoutedEventArgs e)
         {
-            XOselected = true;
-            game.singleX = true;
+            game.SinglePlayerXorO = GameLibrary.XO.X;
             ((Button)sender).Background = Brushes.Turquoise;
-            XOscore[1].Background = Brushes.Gray;
-            newGame();
+            scoreButtons[1].Background = Brushes.Gray;
+            NewGame();
         }
 
         private void O_Click(object sender, RoutedEventArgs e)
         {
-            XOselected = true;
+            game.SinglePlayerXorO = GameLibrary.XO.O;
             Button button = (Button)sender;
-            game.singleX = false;
             button.Background = Brushes.Turquoise;
-            XOscore[0].Background = Brushes.Gray;
-            newGame();
+            scoreButtons[0].Background = Brushes.Gray;
+            NewGame();
         }
 
         private void Multiplayer_Selected(object sender, RoutedEventArgs e)
         {
-            gameModeSelected = true;
-            multiplayerSelected = true;
-            XOselected = false;
+            game.GameMode = GameMode.MULTPILAYER;
+            game.SinglePlayerXorO = GameLibrary.XO.NOTSELECTED;
             ComboBoxItem box = (ComboBoxItem)sender;
             box.IsSelected = true;
-            game.singlePlayer = false;
-            XOscore[0].IsEnabled = false;
-            XOscore[1].IsEnabled = false;
-            XOscore[0].Background = Brushes.Gray;
-            XOscore[1].Background = Brushes.Gray;
-            newGame();
+            scoreButtons[0].IsEnabled = false;
+            scoreButtons[1].IsEnabled = false;
+            scoreButtons[0].Background = Brushes.Gray;
+            scoreButtons[1].Background = Brushes.Gray;
+            NewGame();
         }
 
         private void Easy_Selected(object sender, RoutedEventArgs e)
         {
-            gameModeSelected = true;
-            multiplayerSelected = false;
+            game.GameMode = GameMode.EASY;
             ComboBoxItem box = (ComboBoxItem)sender;
             box.IsSelected = true;
-            game.hardMode = false;
-            XOscore[0].IsEnabled = true;
-            XOscore[1].IsEnabled = true;
-            newGame();
+            scoreButtons[0].IsEnabled = true;
+            scoreButtons[1].IsEnabled = true;
+            NewGame();
 
         }
 
         private void Hard_Selected(object sender, RoutedEventArgs e)
         {
-            gameModeSelected = true;
-            multiplayerSelected = false;
+            game.GameMode = GameMode.HARD;
             ComboBoxItem box = (ComboBoxItem)sender;
             box.IsSelected = true;
-            game.hardMode = true;
-            XOscore[0].IsEnabled = true;
-            XOscore[1].IsEnabled = true;
-            newGame();
+            scoreButtons[0].IsEnabled = true;
+            scoreButtons[1].IsEnabled = true;
+            NewGame();
         }
     }
+
 }
