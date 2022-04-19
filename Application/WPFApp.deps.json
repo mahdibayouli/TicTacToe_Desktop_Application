@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v5.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v5.0": {
+      "WPFApp/1.0.0": {
+        "dependencies": {
+          "GameLibrary": "1.0.0"
+        },
+        "runtime": {
+          "WPFApp.dll": {}
+        }
+      },
+      "GameLibrary/1.0.0": {
+        "runtime": {
+          "GameLibrary.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "WPFApp/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GameLibrary/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
