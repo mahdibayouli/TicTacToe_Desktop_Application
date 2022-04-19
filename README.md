@@ -3,7 +3,7 @@
 * [General info](#general-info)
 * [Overview](#Overview)
 * [Technologies](#technologies)
-* [Run the application](#Run the application)
+* [Run the application](#Run-the-application)
 
 ## General info
 This project is a TicTacToe desktop application. It has three game modes: easy, hard and multiplayer.
