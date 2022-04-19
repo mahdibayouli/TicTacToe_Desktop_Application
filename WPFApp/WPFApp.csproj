@@ -8,7 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="TicTacToe.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GameLibrary\GameLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="TicTacToe.ico" />
   </ItemGroup>
 
 </Project>
