@@ -14,12 +14,13 @@ There is the options to restart the game and reset the score to 0.
 this is an overview
 
 ## Technologies
-Project is created with:
+This project is created with:
 * C#
 * WPF Framework (.NET 5.0)
 
 ## Setup
 To run this application, [.NET must be installed on your computer](https://docs.microsoft.com/en-us/dotnet/framework/install/dotnet-35-windows).
+
 
 ```
 $ cd ../lorem
