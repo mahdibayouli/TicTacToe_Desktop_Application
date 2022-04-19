@@ -9,7 +9,6 @@
 This project is a TicTacToe desktop application. It has three game modes: easy, hard and multiplayer.
 In easy mode, the computer randomly chooses an empty field, whereas in hard mode it uses an AI implemented with the [minimax algorithm](https://en.wikipedia.org/wiki/Minimax). 
 In both these single player modes, the user can either choose to play with X or with O.
-There is the options to restart the game and reset the score to 0. 
 
 ## Overview
 
@@ -33,8 +32,10 @@ This project is created with:
 
 ## Run the application
 To run this application, [.NET must be installed on your computer](https://docs.microsoft.com/en-us/dotnet/framework/install/dotnet-35-windows).
+
 Once you've installed .NET, you can now run the executable file and try the game yourself!
-To do that open the Terminal in the current repository and type the folowing command:
+
+To do that, open the Terminal in the current repository and type the folowing command:
 ```
 ./Application/WPFApp.exe
 ```
